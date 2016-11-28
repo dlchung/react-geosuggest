@@ -24,9 +24,9 @@ class Input extends React.Component {
   /**
    * When the input got changed
    */
-  onChange = () => {
-    this.props.onChange(this.input.value);
-  };
+  onChange = (event) => {
+    this.props.onChange(event.target.value);
+  }
 
   /**
    * When the input got focused
@@ -121,9 +121,11 @@ class Input extends React.Component {
       );
 
     return <TextField className={classes}
+      id="geosuggest-material-ui"
       ref='input'
       type='text'
       {...attributes}
+      value={this.props.value}
       style={this.props.style}
       onKeyDown={this.onInputKeyDown}
       onChange={this.onChange}
