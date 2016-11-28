@@ -124,7 +124,6 @@ class Input extends React.Component {
       ref='input'
       type='text'
       {...attributes}
-      value={this.props.value}
       style={this.props.style}
       onKeyDown={this.onInputKeyDown}
       onChange={this.onChange}
