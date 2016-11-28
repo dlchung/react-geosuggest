@@ -168,7 +168,6 @@ var Input = function (_React$Component) {
         type: 'text',
         autoComplete: 'off'
       }, attributes, {
-        value: this.props.value,
         style: this.props.style,
         onKeyDown: this.onInputKeyDown,
         onChange: this.onChange,
