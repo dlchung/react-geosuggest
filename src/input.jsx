@@ -1,6 +1,7 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import shallowCompare from 'react-addons-shallow-compare';
 import classnames from 'classnames';
+import TextField from 'material-ui/TextField';
 
 import filterInputAttributes from './filter-input-attributes';
 
@@ -119,8 +120,8 @@ class Input extends React.Component {
         this.props.className
       );
 
-    return <input className={classes}
-      ref={i => this.input = i}
+    return <TextField className={classes}
+      ref='input'
       type='text'
       {...attributes}
       value={this.props.value}
