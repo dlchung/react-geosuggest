@@ -56,8 +56,8 @@ var Input = function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Input.__proto__ || Object.getPrototypeOf(Input)).call.apply(_ref, [this].concat(args))), _this), _this.onChange = function () {
-      _this.props.onChange(_this.refs.input.value);
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Input.__proto__ || Object.getPrototypeOf(Input)).call.apply(_ref, [this].concat(args))), _this), _this.onChange = function (event) {
+      _this.props.onChange(event.target.value);
     }, _this.onFocus = function () {
       _this.props.onFocus();
     }, _this.onBlur = function () {
@@ -164,10 +164,12 @@ var Input = function (_React$Component) {
           classes = (0, _classnames2.default)('geosuggest__input', this.props.className);
 
       return _react2.default.createElement(_TextField2.default, _extends({ className: classes,
+        id: 'geosuggest-material-ui',
         ref: 'input',
         type: 'text',
         autoComplete: 'off'
       }, attributes, {
+        value: this.props.value,
         style: this.props.style,
         onKeyDown: this.onInputKeyDown,
         onChange: this.onChange,
