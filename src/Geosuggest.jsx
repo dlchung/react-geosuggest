@@ -414,6 +414,7 @@ class Geosuggest extends React.Component {
       input = <Input className={this.props.inputClassName}
         ref={i => this.input = i}
         value={this.state.userInput}
+        label={this.props.label}
         error={this.props.error}
         ignoreEnter={!this.state.isSuggestsHidden}
         ignoreTab={this.props.ignoreTab}

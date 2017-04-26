@@ -488,6 +488,7 @@ var Geosuggest = function (_React$Component) {
         ref: 'input',
         value: this.state.userInput,
         error: this.props.error,
+        label: this.props.label,
         ignoreEnter: !this.state.isSuggestsHidden,
         ignoreTab: this.props.ignoreTab,
         style: this.props.style.input,
