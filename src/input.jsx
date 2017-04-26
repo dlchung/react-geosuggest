@@ -142,6 +142,7 @@ class Input extends React.Component {
  */
 Input.defaultProps = {
   className: '',
+  error: false,
   value: '',
   ignoreTab: false,
   onKeyDown: () => {},
