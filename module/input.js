@@ -191,6 +191,7 @@ var Input = function (_React$Component) {
 
 Input.defaultProps = {
   className: '',
+  error: false,
   value: '',
   ignoreTab: false,
   onKeyDown: function onKeyDown() {},

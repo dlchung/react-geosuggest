@@ -487,6 +487,7 @@ var Geosuggest = function (_React$Component) {
           input = _react2.default.createElement(_input2.default, _extends({ className: this.props.inputClassName,
         ref: 'input',
         value: this.state.userInput,
+        error: this.props.error,
         ignoreEnter: !this.state.isSuggestsHidden,
         ignoreTab: this.props.ignoreTab,
         style: this.props.style.input,

@@ -18,6 +18,7 @@ exports.default = {
   initialValue: _react2.default.PropTypes.string,
   placeholder: _react2.default.PropTypes.string,
   disabled: _react2.default.PropTypes.bool,
+  error: _react2.default.PropTypes.bool,
   className: _react2.default.PropTypes.string,
   inputClassName: _react2.default.PropTypes.string,
   location: _react2.default.PropTypes.object,

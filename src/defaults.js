@@ -7,6 +7,7 @@ export default {
   maxFixtures: 10,
   initialValue: '',
   placeholder: 'Search places',
+  error: false,
   disabled: false,
   className: '',
   inputClassName: '',
