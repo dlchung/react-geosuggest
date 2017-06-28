@@ -11,6 +11,7 @@ exports.default = {
   fixtures: [],
   initialValue: '',
   placeholder: 'Search places',
+  label: 'Search places',
   error: false,
   disabled: false,
   className: '',

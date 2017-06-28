@@ -10,13 +10,16 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /**
  * Default values
  */
-exports.default = {
+exports.default = _defineProperty({
   fixtures: _react2.default.PropTypes.array,
   initialValue: _react2.default.PropTypes.string,
   placeholder: _react2.default.PropTypes.string,
+  label: _react2.default.PropTypes.string,
   disabled: _react2.default.PropTypes.bool,
   error: _react2.default.PropTypes.bool,
   className: _react2.default.PropTypes.string,
@@ -41,6 +44,5 @@ exports.default = {
     suggests: _react2.default.PropTypes.object,
     suggestItem: _react2.default.PropTypes.object
   }),
-  ignoreTab: _react2.default.PropTypes.bool,
-  label: _react2.default.PropTypes.string
-};
+  ignoreTab: _react2.default.PropTypes.bool
+}, 'label', _react2.default.PropTypes.string);
