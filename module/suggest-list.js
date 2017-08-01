@@ -10,19 +10,21 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _shallowCompare = require('react/lib/shallowCompare');
+var _reactAddonsShallowCompare = require('react-addons-shallow-compare');
 
-var _shallowCompare2 = _interopRequireDefault(_shallowCompare);
+var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 
-var _classnames = require('classnames');
+var _classnames2 = require('classnames');
 
-var _classnames2 = _interopRequireDefault(_classnames);
+var _classnames3 = _interopRequireDefault(_classnames2);
 
 var _suggestItem = require('./suggest-item');
 
 var _suggestItem2 = _interopRequireDefault(_suggestItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -55,7 +57,7 @@ var SuggestList = function (_React$Component) {
      * @return {Boolean} Update or not?
      */
     value: function shouldComponentUpdate(nextProps, nextState) {
-      return (0, _shallowCompare2.default)(this, nextProps, nextState);
+      return (0, _reactAddonsShallowCompare2.default)(this, nextProps, nextState);
     }
 
     /**
@@ -94,22 +96,28 @@ var SuggestList = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      var classes = (0, _classnames2.default)('geosuggest__suggests', { 'geosuggest__suggests--hidden': this.isHidden() });
+      var classes = (0, _classnames3.default)('geosuggest__suggests', this.props.suggestsClassName, { 'geosuggest__suggests--hidden': this.isHidden() }, _defineProperty({}, this.props.hiddenClassName, this.props.hiddenClassName ? this.isHidden() : null));
 
       return _react2.default.createElement(
         'ul',
         { className: classes, style: this.props.style },
         this.props.suggests.map(function (suggest) {
-          var isActive = _this2.props.activeSuggest && suggest.placeId === _this2.props.activeSuggest.placeId;
+          var isActive = _this2.props.activeSuggest && suggest.placeId === _this2.props.activeSuggest.placeId,
+              key = suggest.key || suggest.placeId;
 
-          return _react2.default.createElement(_suggestItem2.default, { key: suggest.placeId,
+          return _react2.default.createElement(_suggestItem2.default, { key: key,
             className: suggest.className,
+            userInput: _this2.props.userInput,
+            isHighlightMatch: _this2.props.isHighlightMatch,
             suggest: suggest,
             style: _this2.props.suggestItemStyle,
+            suggestItemClassName: _this2.props.suggestItemClassName,
             isActive: isActive,
+            activeClassname: _this2.props.suggestItemActiveClassName,
             onMouseDown: _this2.props.onSuggestMouseDown,
             onMouseOut: _this2.props.onSuggestMouseOut,
-            onSelect: _this2.props.onSuggestSelect });
+            onSelect: _this2.props.onSuggestSelect,
+            renderSuggestItem: _this2.props.renderSuggestItem });
         })
       );
     }

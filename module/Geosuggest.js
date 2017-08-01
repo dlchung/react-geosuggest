@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -117,14 +119,12 @@ var Geosuggest = function (_React$Component) {
 
     _this.hideSuggests = function () {
       _this.props.onBlur(_this.state.userInput);
-      var timer = setTimeout(function () {
+      _this.timer = setTimeout(function () {
         _this.setState({
           isSuggestsHidden: true,
           activeSuggest: null
         });
       }, 100);
-
-      _this.setState({ timer: timer });
     };
 
     _this.selectSuggest = function (suggest) {
@@ -136,7 +136,7 @@ var Geosuggest = function (_React$Component) {
 
       _this.setState({
         isSuggestsHidden: true,
-        userInput: suggest.label
+        userInput: _typeof(suggest.label) !== 'object' ? suggest.label : suggest.description
       });
 
       if (suggest.location) {
@@ -153,8 +153,7 @@ var Geosuggest = function (_React$Component) {
       isLoading: false,
       userInput: props.initialValue,
       activeSuggest: null,
-      suggests: [],
-      timer: null
+      suggests: []
     };
 
     _this.onInputChange = _this.onInputChange.bind(_this);
@@ -198,8 +197,10 @@ var Geosuggest = function (_React$Component) {
 
       /* istanbul ignore next */
       if (!googleMaps) {
-        console.error( // eslint-disable-line no-console
-        'Google map api was not found in the page.');
+        if (console) {
+          console.error( // eslint-disable-line no-console
+          'Google map api was not found in the page.');
+        }
         return;
       }
       this.googleMaps = googleMaps;
@@ -215,7 +216,7 @@ var Geosuggest = function (_React$Component) {
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
-      clearTimeout(this.state.timer);
+      clearTimeout(this.timer);
     }
 
     /**
@@ -246,7 +247,17 @@ var Geosuggest = function (_React$Component) {
      * Focus the input
      */
     value: function focus() {
-      this.refs.input.focus();
+      this.input.focus();
+    }
+
+    /**
+     * Blur the input
+     */
+
+  }, {
+    key: 'blur',
+    value: function blur() {
+      this.input.blur();
     }
 
     /**
@@ -329,9 +340,10 @@ var Geosuggest = function (_React$Component) {
       var callback = arguments[1];
 
       var suggests = [],
-          regex = new RegExp(escapeRegExp(this.state.userInput), 'gim'),
+          userInput = this.state.userInput,
+          regex = new RegExp(escapeRegExp(userInput), 'gim'),
           skipSuggest = this.props.skipSuggest,
-          maxFixtures = 10,
+          maxFixtures = this.props.maxFixtures,
           fixturesSearched = 0,
           activeSuggest = null;
 
@@ -345,6 +357,10 @@ var Geosuggest = function (_React$Component) {
 
           suggest.placeId = suggest.label;
           suggest.isFixture = true;
+          suggest.matchedSubstrings = {
+            offset: suggest.label.indexOf(userInput),
+            length: userInput.length
+          };
           suggests.push(suggest);
         }
       });
@@ -352,9 +368,11 @@ var Geosuggest = function (_React$Component) {
       suggestsGoogle.forEach(function (suggest) {
         if (!skipSuggest(suggest)) {
           suggests.push({
+            description: suggest.description,
             label: _this3.props.getSuggestLabel(suggest),
             placeId: suggest.place_id,
-            isFixture: false
+            isFixture: false,
+            matchedSubstrings: suggest.matched_substrings[0]
           });
         }
       });
@@ -377,9 +395,9 @@ var Geosuggest = function (_React$Component) {
       var activeSuggest = this.state.activeSuggest;
 
       if (activeSuggest) {
-        var newSuggest = suggests.find(function (listedSuggest) {
+        var newSuggest = suggests.filter(function (listedSuggest) {
           return activeSuggest.placeId === listedSuggest.placeId && activeSuggest.isFixture === listedSuggest.isFixture;
-        });
+        })[0];
 
         activeSuggest = newSuggest || null;
       }
@@ -458,7 +476,20 @@ var Geosuggest = function (_React$Component) {
     value: function geocodeSuggest(suggest) {
       var _this4 = this;
 
-      this.geocoder.geocode(suggest.placeId && !suggest.isFixture ? { placeId: suggest.placeId } : { address: suggest.label }, function (results, status) {
+      var options = null;
+      if (suggest.placeId && !suggest.isFixture) {
+        options = {
+          placeId: suggest.placeId
+        };
+      } else {
+        options = {
+          address: suggest.label,
+          location: this.props.location,
+          bounds: this.props.bounds,
+          componentRestrictions: this.props.country ? { country: this.props.country } : null
+        };
+      }
+      this.geocoder.geocode(options, function (results, status) {
         if (status === _this4.googleMaps.GeocoderStatus.OK) {
           var gmaps = results[0],
               location = gmaps.geometry.location;
@@ -481,11 +512,15 @@ var Geosuggest = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this5 = this;
+
       var attributes = (0, _filterInputAttributes2.default)(this.props),
           classes = (0, _classnames2.default)('geosuggest', this.props.className, { 'geosuggest--loading': this.state.isLoading }),
           shouldRenderLabel = this.props.label && attributes.id,
           input = _react2.default.createElement(_input2.default, _extends({ className: this.props.inputClassName,
-        ref: 'input',
+        ref: function ref(i) {
+          return _this5.input = i;
+        },
         value: this.state.userInput,
         label: this.props.label,
         error: this.props.error,
@@ -495,6 +530,7 @@ var Geosuggest = function (_React$Component) {
         onChange: this.onInputChange,
         onFocus: this.onInputFocus,
         onBlur: this.onInputBlur,
+        onKeyDown: this.props.onKeyDown,
         onKeyPress: this.props.onKeyPress,
         onNext: this.onNext,
         onPrev: this.onPrev,
@@ -503,12 +539,19 @@ var Geosuggest = function (_React$Component) {
           suggestionsList = _react2.default.createElement(_suggestList2.default, { isHidden: this.state.isSuggestsHidden,
         style: this.props.style.suggests,
         suggestItemStyle: this.props.style.suggestItem,
+        userInput: this.state.userInput,
+        isHighlightMatch: this.props.highlightMatch,
+        suggestsClassName: this.props.suggestsClassName,
+        suggestItemClassName: this.props.suggestItemClassName,
         suggests: this.state.suggests,
+        hiddenClassName: this.props.suggestsHiddenClassName,
+        suggestItemActiveClassName: this.props.suggestItemActiveClassName,
         activeSuggest: this.state.activeSuggest,
         onSuggestNoResults: this.onSuggestNoResults,
         onSuggestMouseDown: this.onSuggestMouseDown,
         onSuggestMouseOut: this.onSuggestMouseOut,
-        onSuggestSelect: this.selectSuggest });
+        onSuggestSelect: this.selectSuggest,
+        renderSuggestItem: this.props.renderSuggestItem });
 
       return _react2.default.createElement(
         'div',
