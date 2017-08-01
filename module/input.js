@@ -12,9 +12,9 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _shallowCompare = require('react/lib/shallowCompare');
+var _reactAddonsShallowCompare = require('react-addons-shallow-compare');
 
-var _shallowCompare2 = _interopRequireDefault(_shallowCompare);
+var _reactAddonsShallowCompare2 = _interopRequireDefault(_reactAddonsShallowCompare);
 
 var _classnames = require('classnames');
 
@@ -66,16 +66,26 @@ var Input = function (_React$Component) {
       _this.props.onKeyPress(event);
     }, _this.onInputKeyDown = function (event) {
       // eslint-disable-line complexity
+      // Call props.onKeyDown if defined
+      // Gives the developer a little bit more control if needed
+      if (_this.props.onKeyDown) {
+        _this.props.onKeyDown(event);
+      }
+
       switch (event.which) {
         case 40:
           // DOWN
-          event.preventDefault();
-          _this.props.onNext();
+          if (!event.shiftKey) {
+            event.preventDefault();
+            _this.props.onNext();
+          }
           break;
         case 38:
           // UP
-          event.preventDefault();
-          _this.props.onPrev();
+          if (!event.shiftKey) {
+            event.preventDefault();
+            _this.props.onPrev();
+          }
           break;
         case 13:
           // ENTER
@@ -112,7 +122,7 @@ var Input = function (_React$Component) {
      * @return {Boolean} Update or not?
      */
     value: function shouldComponentUpdate(nextProps, nextState) {
-      return (0, _shallowCompare2.default)(this, nextProps, nextState);
+      return (0, _reactAddonsShallowCompare2.default)(this, nextProps, nextState);
     }
 
     /**
@@ -149,7 +159,17 @@ var Input = function (_React$Component) {
      * Focus the input
      */
     value: function focus() {
-      this.refs.input.focus();
+      this.input.focus();
+    }
+
+    /**
+     * Blur the input
+     */
+
+  }, {
+    key: 'blur',
+    value: function blur() {
+      this.input.blur();
     }
 
     /**
@@ -166,8 +186,7 @@ var Input = function (_React$Component) {
       return _react2.default.createElement(_TextField2.default, _extends({ className: classes,
         id: 'geosuggest-material-ui',
         ref: 'input',
-        type: 'text',
-        autoComplete: 'off'
+        type: 'text'
       }, attributes, {
         error: this.props.error,
         label: this.props.label,
@@ -196,7 +215,8 @@ Input.defaultProps = {
   value: '',
   ignoreTab: false,
   onKeyDown: function onKeyDown() {},
-  onKeyPress: function onKeyPress() {}
+  onKeyPress: function onKeyPress() {},
+  autoComplete: 'off'
 };
 
 exports.default = Input;

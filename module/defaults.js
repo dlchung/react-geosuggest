@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", {
  */
 exports.default = {
   fixtures: [],
+  maxFixtures: 10,
   initialValue: '',
   placeholder: 'Search places',
   label: 'Search places',
@@ -23,6 +24,7 @@ exports.default = {
   types: null,
   queryDelay: 250,
   googleMaps: null,
+  highlightMatch: true,
   onActivateSuggest: function onActivateSuggest() {},
   onSuggestSelect: function onSuggestSelect() {},
   onSuggestNoResults: function onSuggestNoResults() {},
@@ -33,6 +35,7 @@ exports.default = {
   getSuggestLabel: function getSuggestLabel(suggest) {
     return suggest.description;
   },
+  renderSuggestItem: null,
   autoActivateFirstSuggest: false,
   style: {
     'input': {},
